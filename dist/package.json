@@ -1,0 +1,33 @@
+{
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "deploy": "yarn run build && firebase deploy --only functions",
+    "prebuild": "rimraf dist && copyfiles -u 1 -a \"src\\*\" -e    node_modules dist",
+    "build": "babel src --out-dir dist --ignore src/node_modules",
+    "postbuild": "cd dist && yarn",
+    "watch": "babel src --out-dir dist --ignore src/node_modules --watch"
+  },
+  "engines": {
+    "node": "10"
+  },
+  "dependencies": {
+    "@babel/preset-env": "^7.5.5",
+    "copyfiles": "^2.1.1",
+    "discord.js": "^11.5.1",
+    "express": "^4.17.1",
+    "firebase-admin": "^8.0.0",
+    "firebase-functions": "^3.1.0",
+    "nodemon": "^1.19.1",
+    "request": "^2.88.0",
+    "rimraf": "^2.6.3",
+    "youtube-search": "^1.1.4",
+    "ytdl-core": "^0.29.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "firebase-functions-test": "^0.1.6"
+  },
+  "private": true
+}

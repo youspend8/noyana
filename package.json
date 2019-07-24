@@ -1,0 +1,31 @@
+{
+  "name": "noyana1",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon --exec babel-node main.js",
+    "deploy": "yarn run build && firebase deploy --only functions",
+    "prebuild": "rimraf dist && copyfiles -u 1 -a \"src\\*\" -e    node_modules dist",
+    "build": "babel src --out-dir dist --ignore src/node_modules",
+    "postbuild": "cd dist && yarn",
+    "watch": "babel src --out-dir dist --ignore src/node_modules --watch"
+  },
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "express": "^4.17.1",
+    "ffbinaries": "^1.1.3",
+    "fluent-ffmpeg": "^2.1.2",
+    "nodemon": "^1.19.1",
+    "opusscript": "0.0.6",
+    "request": "^2.88.0",
+
+    "youtube-search": "^1.1.4",
+    "ytdl-core": "^0.29.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",    "copyfiles": "^2.1.1",
+    "rimraf": "^2.6.3",
+    "babel-preset-env": "^1.7.0"
+  }
+}
