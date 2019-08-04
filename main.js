@@ -1,5 +1,5 @@
 
-import { Discord, ytdl, request, client, key, globalStatus } from './global';
+import { Discord, ytdl, request, client, key, globalStatus, userCollection } from './global';
 import { search, getList, play, add } from './actions';
 
 client.on('ready', () => {
@@ -9,22 +9,44 @@ client.on('ready', () => {
 client.on('message', msg => {
   const { content, member, channel } = msg;
 
+  console.log(member.user.id)
   let msgArr = content.split(' ');
+
+  if (content == '=playlist') {
+    globalStatus.playList = [];
+    userCollection.countDocuments({nickname: member.nickname})
+      .then(count => channel.send(`${count}개의 개인 플레이리스트 전체 등록됨`));
+    userCollection.find({nickname: member.nickname}).toArray((err, result) => {
+      let temp = [];
+      result.map((song, index) => {
+        song.item.addUser = member.nickname;
+        temp.push(song.item);
+      });
+      globalStatus.playList = temp;
+    });
+  }
 
   if (content.startsWith('=list')) {
     if (content == '=list') {
       getList(channel);
       return;
     }
-    play(channel, globalStatus.playList[msgArr[1]]);
+
     globalStatus.playingIndex = msgArr[1];
+    play(channel, globalStatus.playList[globalStatus.playingIndex]);
   }
 
   if (content.startsWith('=search ')) {
+    if (globalStatus.connection == '') {
+      member.voiceChannel.join().then(conn => {
+        globalStatus.connection = conn;
+        channel.send('노야나 등장 !!');
+      })
+    }
     globalStatus.searchStatus = true;
-
     const keyword = content.substring(8, content.length);
-    search(channel, keyword);
+    
+    search(channel, keyword.toString());
   }
 
   if (content.startsWith('=v ')) {
@@ -69,7 +91,7 @@ client.on('message', msg => {
           .setTitle('취소됐삼 ㅎㅎ')
           .setAuthor('Noyana By chaehun', 'https://i.imgur.com/wSTFkRM.png', 'https://discord.js.org');
 
-      channel.send(cancelEmbed)
+      channel.send(cancelEmbed);
     }
   }
   
@@ -96,4 +118,5 @@ client.on('message', msg => {
       break;
   }
 });
-client.login('NTk5NTU5OTAwNTUyNDk1MTE0.XSm-oQ.eOexvHEqdUePtEvXAoX67oXlDdU');
+
+client.login('NTk5NTU5OTAwNTUyNDk1MTE0.XTmmEQ.--VkWgFBRdSpfWN_-6k0H7age4I');

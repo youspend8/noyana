@@ -1,8 +1,9 @@
 
-import { Discord, ytdl, request, client, key, globalStatus } from './global';
+import { Discord, ytdl, request, client, key, userCollection, globalStatus } from './global';
 
-const search = (channel, keyword) => {
-  request.get(`https://www.googleapis.com/youtube/v3/search?type=video&key=${key}&part=snippet&q=${encodeURIComponent(keyword)}&maxResults=10`, (err, res, body) => {
+const search = async (channel, keyword) => {
+  await request.get(`https://www.googleapis.com/youtube/v3/search?type=video&key=${key}&part=snippet&q=${encodeURI(keyword)}&maxResults=10`, (err, res, body) => {
+    
     const results = JSON.parse(body).items;
     globalStatus.searchResult = results;
     
@@ -26,6 +27,7 @@ const getList = async channel => {
 }
 
 const add = async (channel, selectedItem, nickname) => {
+  const today = new Date();
   await globalStatus.playList.push(Object.assign({}, selectedItem, { addUser: nickname }));
   if (globalStatus.globalDispatcher == '' || !globalStatus.globalDispatcher.speaking) {
     play(channel, selectedItem);
@@ -39,6 +41,11 @@ const add = async (channel, selectedItem, nickname) => {
     channel.send(selectedEmbed);
     getList(channel);
   }
+  userCollection.insertOne({
+    nickname: nickname,
+    addDate: today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate(),
+    item: selectedItem
+  }, (err, res) => {});
 }
 
 const play = async (channel, selectedItem) => {

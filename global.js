@@ -1,5 +1,5 @@
 
-import Discord from 'discord.js';
+import Discord, { RequestHandler } from 'discord.js';
 import ytdl from 'ytdl-core';
 import request from 'request';
 
@@ -15,3 +15,19 @@ export let globalStatus = {
   globalDispatcher: '',
   playingIndex: 0
 } 
+
+const url = 'mongodb://localhost/';
+const MongoClient = require('mongodb').MongoClient;
+
+MongoClient.connect(url, { useNewUrlParser: true }, (err, database) => {
+  if (err) {
+    console.error(err)
+    return;
+  }
+  const db = database.db('noyana');
+
+  userCollection = db.collection('user');
+});
+
+
+export let userCollection;
